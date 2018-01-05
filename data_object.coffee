@@ -10,8 +10,10 @@ numberfy = (val) ->
   if isNaN(val)
     # check for negative signs or parenthases.
     is_negative = if (val.match("-") || val.match(/\(.*\)/)) then -1 else 1
-    # remove any commas
-    val = val.replace(/,/g, "")
+    # remove any dots
+    val = val.replace(/./g, "")
+    # turn decimal comma into dot
+    val = val.replace(/,/g, ".")
     # return just the number and make it negative if needed.
     +(val.match(/\d+.?\d*/)[0]) * is_negative
   else
