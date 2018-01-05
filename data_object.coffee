@@ -28,7 +28,13 @@ class window.DataObject
 
   # Parse base csv file as JSON. This will be easier to work with.
   # It uses http://papaparse.com/ for handling parsing
-  parse_csv: (csv) -> @base_json = Papa.parse(csv, {"header": true})
+  parse_csv: (csv) -> @base_json = Papa.parse(csv, {
+    "header": true,
+    "delimiter": '', # auto-detect
+    "dynamicTyping": true,
+    "encoding": 'ISO-8859-1',
+    "skipEmptyLines": true
+  })
   fields: -> @base_json.meta.fields
   rows: -> @base_json.data
 
@@ -73,13 +79,15 @@ class window.DataObject
           value.push(tmp_row)
     value
 
+
   converted_csv: (limit, lookup) ->
     return nil if @base_json == null
     # Papa.unparse string
-    string = ynab_cols.join(',') + "\n"
+    string = '\"' + ynab_cols.join('\",\"') + "\"\n"
     @.converted_json(limit, lookup).forEach (row) ->
       row_values = []
       ynab_cols.forEach (col) ->
         row_values.push row[col]
-      string += row_values.join(',') + "\n"
+      string += '\"' + row_values.join('\",\"') + "\"\n"
+
     string
